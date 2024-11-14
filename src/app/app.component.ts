@@ -1,13 +1,39 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { CanvasComponent } from './canvas/canvas.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [SidebarComponent, CanvasComponent],
+  template: `
+    <div class="container">
+      <app-sidebar (elementDrag)="onElementDrag($event)"></app-sidebar>
+      <app-canvas [elements]="elements" (elementDrop)="onElementDrop($event)"></app-canvas>
+    </div>
+  `,
+  styles: [`
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+  `]
 })
 export class AppComponent {
-  title = 'angular-poc';
+  elements: any[] = [];
+  private draggedElementType: string | null = null;
+
+  onElementDrag(elementType: string) {
+    this.draggedElementType = elementType;
+  }
+
+  onElementDrop(position: { x: number; y: number }) {
+    if (this.draggedElementType) {
+      this.elements = [
+        ...this.elements,
+        { type: this.draggedElementType, x: position.x, y: position.y, id: Date.now() }
+      ];
+      this.draggedElementType = null;
+    }
+  }
 }
