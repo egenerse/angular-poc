@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -6,9 +6,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   template: `
     <div class="sidebar">
       @for (element of elements; track element.label) {
-        <div class="element" (pointerdown)="startDrag(element.type)">
-          {{ element.label }}
-        </div>
+      <div [id]="'sidebar-' + element.type" class="element">
+        {{ element.label }}
+      </div>
       }
     </div>
   `,
@@ -28,15 +28,73 @@ import { Component, EventEmitter, Output } from '@angular/core';
     `,
   ],
 })
-export class SidebarComponent {
-  @Output() elementDrag = new EventEmitter<string>();
+export class SidebarComponent implements AfterViewInit {
+  @Output() startSidebarElementDrag = new EventEmitter<string | null>();
 
   elements = [
     { label: 'Box', type: 'box' },
     { label: 'Triangle', type: 'triangle' },
   ];
 
-  startDrag(elementType: string) {
-    this.elementDrag.emit(elementType);
+  ngAfterViewInit(): void {
+    // Initialization logic here
+    const sidebarBox = document.getElementById('sidebar-box');
+    const sidebarTriangle = document.getElementById('sidebar-triangle');
+
+    console.log(' sidebarBox', sidebarBox);
+    console.log(' sidebarTriangle', sidebarTriangle);
+    console;
+    if (sidebarBox) {
+      sidebarBox.addEventListener(
+        'mousedown',
+        (e) => {
+          e.preventDefault();
+          this.startDrag('box');
+        },
+        false
+      );
+      sidebarBox.addEventListener(
+        'touchstart',
+        (e) => {
+          e.preventDefault();
+          this.startDrag('box');
+        },
+        false
+      );
+      // sidebarBox.addEventListener('mouseup', () => this.startDrag(null), false);
+    }
+    if (sidebarTriangle) {
+      sidebarTriangle.addEventListener(
+        'mousedown',
+        (e) => {
+          e.preventDefault();
+          this.startDrag('triangle');
+        },
+        false
+      );
+      sidebarTriangle.addEventListener(
+        'touchstart',
+        (e) => {
+          e.preventDefault();
+          this.startDrag('triangle');
+        },
+        false
+      );
+      // sidebarTriangle.addEventListener(
+      //   'touchend',
+      //   () => this.startDrag(null),
+      //   false
+      // );
+      // sidebarTriangle.addEventListener(
+      //   'touchcancel',
+      //   () => this.startDrag(null),
+      //   false
+      // );
+    }
+  }
+
+  startDrag(elementType: string | null) {
+    console.log('startDrag', elementType);
+    this.startSidebarElementDrag.emit(elementType);
   }
 }

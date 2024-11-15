@@ -11,7 +11,7 @@ interface CanvasElement {
   selector: 'app-canvas',
   standalone: true,
   template: `
-    <div class="canvas" (pointerup)="onCanvasPointerUp($event)">
+    <div class="canvas" (pointerup)="onCanvasPointerUp($event)" >
       <svg width="2000" height="2000">
         @for (element of elements; track element.id) {
           <g
@@ -53,6 +53,7 @@ export class CanvasComponent {
   constructor(private el: ElementRef) {}
 
   onCanvasPointerUp(event: PointerEvent) {
+    console.log('Canvas pointer up', event);
     if (!this.activeElement) {
       const rect = this.el.nativeElement.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -65,7 +66,7 @@ export class CanvasComponent {
   }
 
   onElementPointerDown(event: PointerEvent, element: CanvasElement) {
-    event.stopPropagation();
+    event.preventDefault(); // Prevents scrolling on pointer down
     this.activeElement = element;
     this.offsetX = event.clientX - element.x;
     this.offsetY = event.clientY - element.y;
@@ -74,9 +75,12 @@ export class CanvasComponent {
 
   @HostListener('pointermove', ['$event'])
   onPointerMove(event: PointerEvent) {
+    console.log('Pointer move', event);
     if (this.activeElement) {
+      event.preventDefault(); // Prevents scrolling on pointer move
       this.activeElement.x = event.clientX - this.offsetX;
       this.activeElement.y = event.clientY - this.offsetY;
     }
+    return false;
   }
 }
