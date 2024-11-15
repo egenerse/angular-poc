@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { CanvasComponent } from './canvas/canvas.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { CanvasElement } from './canvas-element/canvas-element.interface';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +9,14 @@ import { CanvasComponent } from './canvas/canvas.component';
   imports: [SidebarComponent, CanvasComponent],
   template: `
     <div class="container">
-      <app-sidebar (startSidebarElementDrag)="onElementDrag($event)"></app-sidebar>
+      <app-sidebar
+        (startSidebarElementDrag)="onStartSidebarElementDrag($event)"
+      ></app-sidebar>
       <div class="canvas-container">
         <app-canvas
           [elements]="elements"
-          (elementDrop)="onElementDrop($event)"
+          (onElementAdded)="onElementAdded($event)"
+          (elementMoved)="onElementMoved($event)"
         ></app-canvas>
       </div>
     </div>
@@ -23,37 +27,22 @@ import { CanvasComponent } from './canvas/canvas.component';
         display: flex;
         height: 100vh;
         overflow: hidden;
-      }
-      app-sidebar {
-        position: fixed;
-        width: 50px;
-        height: 100%;
-        left: 0;
-        top: 0;
-        background-color: #f4f4f4;
-      }
-      .canvas-container {
-        margin-left: 50px; /* Offset to the right of the fixed sidebar */
-        flex: 1;
-        overflow: auto; /* Make canvas scrollable independently */
-      }
-      app-canvas {
-        width: 2000px;
-        height: 2000px;
+        background-color: #eaeaea; /* Light background for contrast */
       }
     `,
   ],
 })
 export class AppComponent {
-  elements: any[] = [];
+  elements: CanvasElement[] = [
+    { type: 'box', x: 277.01171875, y: 169.76953125, id: 1731667437104 },
+  ];
   private draggedElementType: string | null = null;
 
-  onElementDrag(elementType: string | null) {
+  onStartSidebarElementDrag(elementType: string | null) {
     this.draggedElementType = elementType;
   }
 
-  onElementDrop(position: { x: number; y: number }) {
-
+  onElementAdded(position: { x: number; y: number }) {
     console.log('Element dropped at', position);
     console.log('this.draggedElementType', this.draggedElementType);
     if (this.draggedElementType) {
@@ -67,6 +56,13 @@ export class AppComponent {
         },
       ];
       this.draggedElementType = null;
+      console.log('this.elements', this.elements);
     }
   }
+
+  onElementMoved = (event: { id: number; x: number; y: number }) => {
+    this.elements = this.elements.map((element) =>
+      element.id === event.id ? { ...element, x: event.x, y: event.y } : element
+    );
+  };
 }
