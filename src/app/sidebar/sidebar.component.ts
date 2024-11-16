@@ -1,16 +1,31 @@
-import { Component, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+  inject,
+} from '@angular/core';
+import { SideBarElementDirective } from '../side-bar-element.directive';
+import { ElementType } from '../canvas-element/canvas-element.interface';
+import { ElementsStore } from '../store/elements.store';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
+  imports: [SideBarElementDirective],
   template: `
     <div class="sidebar">
       @for (element of elements; track element.label) {
-      <div [id]="'sidebar-' + element.type" class="element">
+      <div
+        [id]="'sidebar-' + element.type"
+        class="element"
+        [appSideBarElement]="element.type"
+      >
         {{ element.label }}
       </div>
       }
     </div>
+    <div>{{ store.draggedElementType() }}</div>
   `,
   styles: [
     `
@@ -28,73 +43,60 @@ import { Component, EventEmitter, Output, AfterViewInit } from '@angular/core';
     `,
   ],
 })
-export class SidebarComponent implements AfterViewInit {
-  @Output() startSidebarElementDrag = new EventEmitter<string | null>();
+export class SidebarComponent {
+  readonly store = inject(ElementsStore);
 
   elements = [
-    { label: 'Box', type: 'box' },
-    { label: 'Triangle', type: 'triangle' },
+    { label: 'Box', type: ElementType.Box },
+    { label: 'Triangle', type: ElementType.Triangle },
   ];
 
-  ngAfterViewInit(): void {
-    // Initialization logic here
-    const sidebarBox = document.getElementById('sidebar-box');
-    const sidebarTriangle = document.getElementById('sidebar-triangle');
-
-    console.log(' sidebarBox', sidebarBox);
-    console.log(' sidebarTriangle', sidebarTriangle);
-    console;
-    if (sidebarBox) {
-      sidebarBox.addEventListener(
-        'mousedown',
-        (e) => {
-          e.preventDefault();
-          this.startDrag('box');
-        },
-        false
-      );
-      sidebarBox.addEventListener(
-        'touchstart',
-        (e) => {
-          e.preventDefault();
-          this.startDrag('box');
-        },
-        false
-      );
-      // sidebarBox.addEventListener('mouseup', () => this.startDrag(null), false);
-    }
-    if (sidebarTriangle) {
-      sidebarTriangle.addEventListener(
-        'mousedown',
-        (e) => {
-          e.preventDefault();
-          this.startDrag('triangle');
-        },
-        false
-      );
-      sidebarTriangle.addEventListener(
-        'touchstart',
-        (e) => {
-          e.preventDefault();
-          this.startDrag('triangle');
-        },
-        false
-      );
-      // sidebarTriangle.addEventListener(
-      //   'touchend',
-      //   () => this.startDrag(null),
-      //   false
-      // );
-      // sidebarTriangle.addEventListener(
-      //   'touchcancel',
-      //   () => this.startDrag(null),
-      //   false
-      // );
-    }
-  }
-
-  startDrag(elementType: string | null) {
-    console.log('startDrag', elementType);
-    this.startSidebarElementDrag.emit(elementType);
-  }
+  // Initialization logic here
+  // if (sidebarBox) {
+  //   sidebarBox.addEventListener(
+  //     'mousedown',
+  //     (e) => {
+  //       e.preventDefault();
+  //       this.startDrag(ElementType.Box);
+  //     },
+  //     false
+  //   );
+  //   sidebarBox.addEventListener(
+  //     'touchstart',
+  //     (e) => {
+  //       e.preventDefault();
+  //       this.startDrag(ElementType.Box);
+  //     },
+  //     false
+  //   );
+  //   // sidebarBox.addEventListener('mouseup', () => this.startDrag(null), false);
+  // }
+  // if (sidebarTriangle) {
+  //   sidebarTriangle.addEventListener(
+  //     'mousedown',
+  //     (e) => {
+  //       e.preventDefault();
+  //       this.startDrag(ElementType.Triangle);
+  //     },
+  //     false
+  //   );
+  //   sidebarTriangle.addEventListener(
+  //     'touchstart',
+  //     (e) => {
+  //       e.preventDefault();
+  //       this.startDrag(ElementType.Triangle);
+  //     },
+  //     false
+  //   );
+  //   // sidebarTriangle.addEventListener(
+  //   //   'touchend',
+  //   //   () => this.startDrag(null),
+  //   //   false
+  //   // );
+  //   // sidebarTriangle.addEventListener(
+  //   //   'touchcancel',
+  //   //   () => this.startDrag(null),
+  //   //   false
+  //   // );
+  // }
 }

@@ -1,7 +1,19 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import { BoxDirective } from "./directives/box.directive";
-import { TriangleDirective } from "./directives/triangle.directive";
-import { CanvasElement } from "../canvas-element/canvas-element.interface";
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { BoxDirective } from './directives/box.directive';
+import { TriangleDirective } from './directives/triangle.directive';
+import {
+  CanvasElement,
+  ElementType,
+} from '../canvas-element/canvas-element.interface';
+import { ElementsStore } from '../store/elements.store';
 
 @Component({
   selector: 'app-canvas',
@@ -10,17 +22,24 @@ import { CanvasElement } from "../canvas-element/canvas-element.interface";
   template: `
     <div class="canvas" (pointerup)="onCanvasPointerUp($event)" #canvas>
       <svg width="2000" height="2000">
-        @for (element of elements; track element.id) {
+        @for (element of this.store.elements(); track element.id) {
+        <g
+          [attr.transform]="'translate(' + element.x + ',' + element.y + ')'"
+          (pointerdown)="onElementPointerDown($event, element)"
+        >
+          @if (element.type === 'box') {
           <g
-            [attr.transform]="'translate(' + element.x + ',' + element.y + ')'"
-            (pointerdown)="onElementPointerDown($event, element)"
-          >
-            @if (element.type === 'box') {
-              <g appBox [x]="0" [y]="0" [width]="100" [height]="100" [fill]="'#007acc'"></g>
-            } @else {
-              <g appTriangle [points]="'50,0 100,100 0,100'" [fill]="'#ff5722'"></g>
-            }
-          </g>
+            appBox
+            [x]="0"
+            [y]="0"
+            [width]="100"
+            [height]="100"
+            [fill]="'#007acc'"
+          ></g>
+          } @else {
+          <g appTriangle [points]="'50,0 100,100 0,100'" [fill]="'#ff5722'"></g>
+          }
+        </g>
         }
       </svg>
     </div>
@@ -40,20 +59,14 @@ import { CanvasElement } from "../canvas-element/canvas-element.interface";
   ],
 })
 export class CanvasComponent {
-  @Input() elements: CanvasElement[] = [];
-  @Output() onElementAdded = new EventEmitter<{ x: number; y: number }>();
-  @Output() elementMoved = new EventEmitter<{
-    id: number;
-    x: number;
-    y: number;
-  }>();
-
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLDivElement>;
 
+  readonly store = inject(ElementsStore);
   private canvasPosition: DOMRect | null = null;
   private activeElement: CanvasElement | null = null;
 
   ngAfterViewInit() {
+    console.log('this.store', this.store.elements());
     this.updateCanvasPosition();
   }
 
@@ -67,10 +80,10 @@ export class CanvasComponent {
   onCanvasPointerUp(event: PointerEvent) {
     this.updateCanvasPosition();
 
-    if (this.canvasPosition && !this.activeElement) {
+    if (this.canvasPosition && !this.activeElement && this.store.draggedElementType()) {
       const x = event.clientX - this.canvasPosition.left;
       const y = event.clientY - this.canvasPosition.top;
-      this.onElementAdded.emit({ x, y });
+      this.store.addElement({ x, y });
     } else {
       this.activeElement = null;
     }
