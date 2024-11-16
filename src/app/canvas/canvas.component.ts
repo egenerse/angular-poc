@@ -35,6 +35,7 @@ import { ElementsStore } from '../store/elements.store';
             [width]="100"
             [height]="100"
             [fill]="'#007acc'"
+            [text]="'asdasdas'"
           ></g>
           } @else {
           <g appTriangle [points]="'50,0 100,100 0,100'" [fill]="'#ff5722'"></g>

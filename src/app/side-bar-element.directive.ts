@@ -5,8 +5,7 @@ import {
   HostListener,
   inject,
   input,
-  Input,
-  signal,
+
 } from '@angular/core';
 import { ElementType } from './canvas-element/canvas-element.interface';
 import { ElementsStore } from './store/elements.store';
