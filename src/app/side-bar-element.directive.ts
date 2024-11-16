@@ -4,7 +4,9 @@ import {
   ElementRef,
   HostListener,
   inject,
+  input,
   Input,
+  signal,
 } from '@angular/core';
 import { ElementType } from './canvas-element/canvas-element.interface';
 import { ElementsStore } from './store/elements.store';
@@ -14,7 +16,7 @@ import { ElementsStore } from './store/elements.store';
   standalone: true,
 })
 export class SideBarElementDirective implements AfterViewInit {
-  @Input('appSideBarElement') elementType: ElementType = ElementType.Box;
+  elementType = input.required<ElementType>();
   readonly store = inject(ElementsStore);
 
   constructor(private el: ElementRef) {
@@ -26,14 +28,14 @@ export class SideBarElementDirective implements AfterViewInit {
   }
 
   @HostListener('mousedown') onMouseDown() {
-    console.log('Mouse down:' + this.elementType);
-    this.store.setDraggedElementType(this.elementType);
+    console.log('Mouse down:' + this.elementType());
+    this.store.setDraggedElementType(this.elementType());
     this.highlight('green');
   }
 
   @HostListener('touchstart') onTouchstart() {
     console.log('touchstart');
-    this.store.setDraggedElementType(this.elementType);
+    this.store.setDraggedElementType(this.elementType());
     this.highlight('green');
   }
   @HostListener('mouseleave') onMouseLeave() {

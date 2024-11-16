@@ -19,7 +19,8 @@ import { ElementsStore } from '../store/elements.store';
       <div
         [id]="'sidebar-' + element.type"
         class="element"
-        [appSideBarElement]="element.type"
+        appSideBarElement
+        [elementType]="element.type"
       >
         {{ element.label }}
       </div>
