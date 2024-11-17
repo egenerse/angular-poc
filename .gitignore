@@ -44,3 +44,4 @@ Thumbs.db
 #builds for ios and android
 ios/
 android/
+.firebase/
