@@ -87,21 +87,23 @@ export class DraggableElementDirective implements OnDestroy {
     const canvas = this.el.nativeElement.closest('svg') as SVGElement;
     this.canvasPosition = canvas?.getBoundingClientRect() ?? null;
   
-    // Get the element's position
+    // Get element's bounding box
     const boundingBox = this.getBoundingBox();
-    this.offsetX = clientX - boundingBox.centerX;
-    this.offsetY = clientY - boundingBox.centerY;
+  
+    // Calculate offset from the cursor to the element's top-left corner
+    this.offsetX = clientX - boundingBox.x;
+    this.offsetY = clientY - boundingBox.y;
   }
   
-  private getBoundingBox(): { centerX: number; centerY: number } {
+  private getBoundingBox(): { x: number; y: number } {
     const element = this.el.nativeElement;
   
     // Try to use getBoundingClientRect
     const rect = element.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
       return {
-        centerX: rect.left + rect.width / 2,
-        centerY: rect.top + rect.height / 2,
+        x: rect.left,
+        y: rect.top,
       };
     }
   
@@ -110,22 +112,23 @@ export class DraggableElementDirective implements OnDestroy {
     const bbox = svgElement?.getBBox();
     if (bbox) {
       return {
-        centerX: bbox.x + bbox.width / 2,
-        centerY: bbox.y + bbox.height / 2,
+        x: bbox.x,
+        y: bbox.y,
       };
     }
   
     console.warn('Could not calculate bounding box for element.');
-    return { centerX: 0, centerY: 0 };
+    return { x: 0, y: 0 };
   }
+  
 
   private handleDrag(clientX: number, clientY: number): void {
-    console.log('DEBUG: DraggableElementDirective handleDrag');
     if (!this.canvasPosition) return;
-
+    
     const x = clientX - this.canvasPosition.left - this.offsetX;
     const y = clientY - this.canvasPosition.top - this.offsetY;
-
+  
+    // Update the element's position in the store
     this.store.moveElement({ id: this.element().id, x, y });
   }
 
