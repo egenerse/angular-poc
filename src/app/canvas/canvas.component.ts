@@ -1,5 +1,4 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { throttle } from 'lodash';
 import { BoxDirective } from './directives/box.directive';
 import { TriangleDirective } from './directives/triangle.directive';
 import { CanvasElement } from '../canvas-element/canvas-element.interface';

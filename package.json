@@ -23,6 +23,7 @@
     "@capacitor/core": "^6.1.2",
     "@capacitor/ios": "^6.1.2",
     "@ngrx/signals": "^18.1.1",
+    "lodash-es": "^4.17.21",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -33,7 +34,7 @@
     "@angular/compiler-cli": "^18.2.0",
     "@capacitor/cli": "^6.1.2",
     "@types/jasmine": "~5.1.0",
-    "@types/lodash": "^4.17.13",
+    "@types/lodash-es": "^4.17.12",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

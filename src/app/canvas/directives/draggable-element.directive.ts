@@ -7,7 +7,7 @@ import {
   OnDestroy,
   output,
 } from '@angular/core';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { ElementsStore } from '../../store/elements.store';
 import { CanvasElement } from '../../canvas-element/canvas-element.interface';
 
