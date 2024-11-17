@@ -1,18 +1,13 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  AfterViewInit,
-  inject,
-} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SideBarElementDirective } from '../side-bar-element.directive';
 import { ElementType } from '../canvas-element/canvas-element.interface';
 import { ElementsStore } from '../store/elements.store';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [SideBarElementDirective],
+  imports: [SideBarElementDirective, NgStyle],
   template: `
     <div class="sidebar">
       @for (element of elements; track element.label) {
@@ -21,6 +16,10 @@ import { ElementsStore } from '../store/elements.store';
         class="element"
         appSideBarElement
         [elementType]="element.type"
+        [ngStyle]="{
+          'background-color':
+            store.draggedElementType() === element.type ? 'green' : ''
+        }"
       >
         {{ element.label }}
       </div>

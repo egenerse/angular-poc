@@ -28,27 +28,21 @@ export class SideBarElementDirective implements AfterViewInit {
   @HostListener('mousedown') onMouseDown() {
     console.log('Mouse down:' + this.elementType());
     this.store.setDraggedElementType(this.elementType());
-    this.highlight('green');
+
+    return false;
   }
 
   @HostListener('touchstart') onTouchstart(e: TouchEvent) {
     console.log('touchstart');
     this.store.setDraggedElementType(this.elementType());
-    this.highlight('green');
   }
 
   @HostListener('touchend') onTouchEnd(e: TouchEvent) {
     console.log('touchend: ', e);
     this.store.setDraggedElementType(this.elementType());
-    this.highlight('green');
   }
 
   @HostListener('mouseleave') onMouseLeave() {
     console.log('mouseleave');
-    this.highlight('');
-  }
-
-  private highlight(color: string) {
-    this.el.nativeElement.style.backgroundColor = color;
   }
 }
