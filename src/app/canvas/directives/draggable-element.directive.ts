@@ -82,15 +82,41 @@ export class DraggableElementDirective implements OnDestroy {
 
   private initializeDrag(clientX: number, clientY: number): void {
     this.setActiveElement.emit(this.element());
-
+  
+    // Get the closest SVG canvas
     const canvas = this.el.nativeElement.closest('svg') as SVGElement;
-    if (canvas) {
-      this.canvasPosition = canvas.getBoundingClientRect();
+    this.canvasPosition = canvas?.getBoundingClientRect() ?? null;
+  
+    // Get the element's position
+    const boundingBox = this.getBoundingBox();
+    this.offsetX = clientX - boundingBox.centerX;
+    this.offsetY = clientY - boundingBox.centerY;
+  }
+  
+  private getBoundingBox(): { centerX: number; centerY: number } {
+    const element = this.el.nativeElement;
+  
+    // Try to use getBoundingClientRect
+    const rect = element.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      return {
+        centerX: rect.left + rect.width / 2,
+        centerY: rect.top + rect.height / 2,
+      };
     }
-
-    const elementPosition = this.el.nativeElement.getBoundingClientRect();
-    this.offsetX = clientX - elementPosition.left;
-    this.offsetY = clientY - elementPosition.top;
+  
+    // Fallback to getBBox for SVG elements
+    const svgElement = element.querySelector('polygon, rect, circle') as SVGGraphicsElement;
+    const bbox = svgElement?.getBBox();
+    if (bbox) {
+      return {
+        centerX: bbox.x + bbox.width / 2,
+        centerY: bbox.y + bbox.height / 2,
+      };
+    }
+  
+    console.warn('Could not calculate bounding box for element.');
+    return { centerX: 0, centerY: 0 };
   }
 
   private handleDrag(clientX: number, clientY: number): void {

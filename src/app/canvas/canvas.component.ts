@@ -31,9 +31,8 @@ import { CanvasPanningDirective } from './directives/canvas-panning.directive';
             @if (element.type === 'box') {
             <g
               class="element"
-              appDraggableElement
-              (setActiveElement)="setActiveElement($event)"
               appBox
+              appDraggableElement
               [activeElement]="activeElement"
               [element]="element"
               [x]="0"
@@ -43,17 +42,18 @@ import { CanvasPanningDirective } from './directives/canvas-panning.directive';
               [fill]="'#007acc'"
               [text]="'Box'"
               [isEditable]="true"
+              (setActiveElement)="setActiveElement($event)"
             ></g>
             } @else {
             <g
               class="element"
+              appTriangle
               appDraggableElement
-              (setActiveElement)="setActiveElement($event)"
               [activeElement]="activeElement"
               [element]="element"
-              appTriangle
               [points]="'50,0 100,100 0,100'"
               [fill]="'#ff5722'"
+              (setActiveElement)="setActiveElement($event)"
             ></g>
             }
           </g>
