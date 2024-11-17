@@ -1,14 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  inject,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { throttle } from 'lodash';
 import { BoxDirective } from './directives/box.directive';
 import { TriangleDirective } from './directives/triangle.directive';
-import {
-  CanvasElement,
-} from '../canvas-element/canvas-element.interface';
+import { CanvasElement } from '../canvas-element/canvas-element.interface';
 import { ElementsStore } from '../store/elements.store';
 
 @Component({
@@ -16,12 +10,12 @@ import { ElementsStore } from '../store/elements.store';
   standalone: true,
   imports: [BoxDirective, TriangleDirective],
   template: `
-    <div class="canvas" (pointerup)="onCanvasPointerUp($event)" #canvas>
+    <div (pointerup)="onCanvasPointerUp($event)" #canvas>
       <svg width="2000" height="2000">
         @for (element of this.store.elements(); track element.id) {
         <g
           [attr.transform]="'translate(' + element.x + ',' + element.y + ')'"
-          (pointerdown)="onElementPointerDown($event, element)"
+          (pointerdown)="onPointerDown($event, element)"
         >
           @if (element.type === 'box') {
           <g
@@ -57,22 +51,29 @@ export class CanvasComponent {
   private canvasPosition: DOMRect | null = null;
   private activeElement: CanvasElement | null = null;
 
+  constructor() {
+    // Bind throttled method
+    this.updateElementPosition = throttle(this.updateElementPosition, 16); // ~60 FPS
+  }
+
   ngAfterViewInit() {
-    console.log('this.store', this.store.elements());
     this.updateCanvasPosition();
   }
 
   private updateCanvasPosition() {
     if (this.canvasRef) {
-      this.canvasPosition =
-        this.canvasRef.nativeElement.getBoundingClientRect();
+      this.canvasPosition = this.canvasRef.nativeElement.getBoundingClientRect();
     }
   }
 
   onCanvasPointerUp(event: PointerEvent) {
     this.updateCanvasPosition();
 
-    if (this.canvasPosition && !this.activeElement && this.store.draggedElementType()) {
+    if (
+      this.canvasPosition &&
+      !this.activeElement &&
+      this.store.draggedElementType()
+    ) {
       const x = event.clientX - this.canvasPosition.left;
       const y = event.clientY - this.canvasPosition.top;
       this.store.addElement({ x, y });
@@ -81,7 +82,36 @@ export class CanvasComponent {
     }
   }
 
-  onElementPointerDown(event: PointerEvent, element: CanvasElement) {
+  onPointerDown(event: PointerEvent, element: CanvasElement) {
+    event.preventDefault();
+
+    this.canvasRef.nativeElement.setPointerCapture(event.pointerId);
     this.activeElement = element;
+    this.updateCanvasPosition();
+
+    window.addEventListener('pointermove', this.onPointerMove);
+    window.addEventListener('pointerup', this.onPointerUp);
   }
+
+  private onPointerMove = (event: PointerEvent) => {
+    if (this.activeElement && this.canvasPosition) {
+      const x = event.clientX - this.canvasPosition.left;
+      const y = event.clientY - this.canvasPosition.top;
+
+      // Use throttled method for updating position
+      this.updateElementPosition(x, y);
+    }
+  };
+
+  private updateElementPosition(x: number, y: number) {
+    if (this.activeElement) {
+      this.store.moveElement({ id: this.activeElement.id, x, y });
+    }
+  }
+
+  private onPointerUp = () => {
+    this.activeElement = null;
+    window.removeEventListener('pointermove', this.onPointerMove);
+    window.removeEventListener('pointerup', this.onPointerUp);
+  };
 }
