@@ -37,12 +37,12 @@ export class SideBarElementDirective implements AfterViewInit {
     this.store.setDraggedElementType(this.elementType());
   }
 
-  @HostListener('touchend') onTouchEnd(e: TouchEvent) {
-    console.log('touchend: ', e);
-    this.store.setDraggedElementType(this.elementType());
-  }
+  // @HostListener('touchend') onTouchEnd(e: TouchEvent) {
+  //   console.log('touchend: ', e);
+  //   this.store.setDraggedElementType(this.elementType());
+  // }
 
-  @HostListener('mouseleave') onMouseLeave() {
-    console.log('mouseleave');
-  }
+  // @HostListener('mouseleave') onMouseLeave() {
+  //   console.log('mouseleave');
+  // }
 }
