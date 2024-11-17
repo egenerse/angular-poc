@@ -1,17 +1,13 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
   inject,
-  Input,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { BoxDirective } from './directives/box.directive';
 import { TriangleDirective } from './directives/triangle.directive';
 import {
   CanvasElement,
-  ElementType,
 } from '../canvas-element/canvas-element.interface';
 import { ElementsStore } from '../store/elements.store';
 
@@ -48,12 +44,6 @@ import { ElementsStore } from '../store/elements.store';
   `,
   styles: [
     `
-      .canvas {
-        flex: 1;
-        border: 1px solid #ccc;
-        position: relative;
-        overflow: auto;
-      }
       svg {
         background-color: #f9f9f9;
       }

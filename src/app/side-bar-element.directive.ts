@@ -5,7 +5,6 @@ import {
   HostListener,
   inject,
   input,
-
 } from '@angular/core';
 import { ElementType } from './canvas-element/canvas-element.interface';
 import { ElementsStore } from './store/elements.store';
@@ -32,11 +31,18 @@ export class SideBarElementDirective implements AfterViewInit {
     this.highlight('green');
   }
 
-  @HostListener('touchstart') onTouchstart() {
+  @HostListener('touchstart') onTouchstart(e: TouchEvent) {
     console.log('touchstart');
     this.store.setDraggedElementType(this.elementType());
     this.highlight('green');
   }
+
+  @HostListener('touchend') onTouchEnd(e: TouchEvent) {
+    console.log('touchend: ', e);
+    this.store.setDraggedElementType(this.elementType());
+    this.highlight('green');
+  }
+
   @HostListener('mouseleave') onMouseLeave() {
     console.log('mouseleave');
     this.highlight('');

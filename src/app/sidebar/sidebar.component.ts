@@ -30,11 +30,6 @@ import { ElementsStore } from '../store/elements.store';
   `,
   styles: [
     `
-      .sidebar {
-        width: 200px;
-        background-color: #f4f4f4;
-        padding: 10px;
-      }
       .element {
         margin: 5px;
         padding: 10px;
@@ -51,53 +46,4 @@ export class SidebarComponent {
     { label: 'Box', type: ElementType.Box },
     { label: 'Triangle', type: ElementType.Triangle },
   ];
-
-  // Initialization logic here
-  // if (sidebarBox) {
-  //   sidebarBox.addEventListener(
-  //     'mousedown',
-  //     (e) => {
-  //       e.preventDefault();
-  //       this.startDrag(ElementType.Box);
-  //     },
-  //     false
-  //   );
-  //   sidebarBox.addEventListener(
-  //     'touchstart',
-  //     (e) => {
-  //       e.preventDefault();
-  //       this.startDrag(ElementType.Box);
-  //     },
-  //     false
-  //   );
-  //   // sidebarBox.addEventListener('mouseup', () => this.startDrag(null), false);
-  // }
-  // if (sidebarTriangle) {
-  //   sidebarTriangle.addEventListener(
-  //     'mousedown',
-  //     (e) => {
-  //       e.preventDefault();
-  //       this.startDrag(ElementType.Triangle);
-  //     },
-  //     false
-  //   );
-  //   sidebarTriangle.addEventListener(
-  //     'touchstart',
-  //     (e) => {
-  //       e.preventDefault();
-  //       this.startDrag(ElementType.Triangle);
-  //     },
-  //     false
-  //   );
-  //   // sidebarTriangle.addEventListener(
-  //   //   'touchend',
-  //   //   () => this.startDrag(null),
-  //   //   false
-  //   // );
-  //   // sidebarTriangle.addEventListener(
-  //   //   'touchcancel',
-  //   //   () => this.startDrag(null),
-  //   //   false
-  //   // );
-  // }
 }
