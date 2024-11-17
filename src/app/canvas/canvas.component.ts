@@ -10,8 +10,10 @@ import { ElementsStore } from '../store/elements.store';
   standalone: true,
   imports: [BoxDirective, TriangleDirective],
   template: `
-    <div (pointerup)="onCanvasPointerUp($event)" #canvas>
-      <svg width="2000" height="2000">
+    <div (pointerup)="onCanvasPointerUp($event)" #canvas
+    style="touch-action: none;">
+    >
+      <svg width="2000" height="2000"  [attr.transform]="'scale( 1.1,1.1)'" >
         @for (element of this.store.elements(); track element.id) {
         <g
           [attr.transform]="'translate(' + element.x + ',' + element.y + ')'"
@@ -53,7 +55,7 @@ export class CanvasComponent {
 
   constructor() {
     // Bind throttled method
-    this.updateElementPosition = throttle(this.updateElementPosition, 16); // ~60 FPS
+    this.updateElementPosition = throttle(this.updateElementPosition, 40);
   }
 
   ngAfterViewInit() {
@@ -84,17 +86,29 @@ export class CanvasComponent {
 
   onPointerDown(event: PointerEvent, element: CanvasElement) {
     event.preventDefault();
-
-    this.canvasRef.nativeElement.setPointerCapture(event.pointerId);
+    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+  
     this.activeElement = element;
     this.updateCanvasPosition();
-
-    window.addEventListener('pointermove', this.onPointerMove);
-    window.addEventListener('pointerup', this.onPointerUp);
+  
+    // Use document for global event handling
+    document.addEventListener('pointermove', this.onPointerMove);
+    document.addEventListener('pointerup', this.onPointerUp);
   }
+  
+  private onPointerUp = () => {
+    this.activeElement = null;
+    document.removeEventListener('pointermove', this.onPointerMove);
+    document.removeEventListener('pointerup', this.onPointerUp);
+  };
+
 
   private onPointerMove = (event: PointerEvent) => {
+
+    event.preventDefault();
     if (this.activeElement && this.canvasPosition) {
+
+      console.log('Pointer onPointerMove', event);
       const x = event.clientX - this.canvasPosition.left;
       const y = event.clientY - this.canvasPosition.top;
 
@@ -108,10 +122,4 @@ export class CanvasComponent {
       this.store.moveElement({ id: this.activeElement.id, x, y });
     }
   }
-
-  private onPointerUp = () => {
-    this.activeElement = null;
-    window.removeEventListener('pointermove', this.onPointerMove);
-    window.removeEventListener('pointerup', this.onPointerUp);
-  };
 }
