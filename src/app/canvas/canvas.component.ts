@@ -51,7 +51,14 @@ import { CanvasPanningDirective } from './directives/canvas-panning.directive';
             [isEditable]="true"
           ></g>
           } @else {
-          <g appTriangle [points]="'50,0 100,100 0,100'" [fill]="'#ff5722'"></g>
+          <g             appDraggableElement
+
+          (setActiveElement)="setActiveElement($event)"
+
+            [activeElement] = "activeElement"
+            [element]="element"
+
+          appTriangle [points]="'50,0 100,100 0,100'" [fill]="'#ff5722'"></g>
           }
         </g>
         }
