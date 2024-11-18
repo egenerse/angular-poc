@@ -6,8 +6,8 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { ElementType } from './canvas-element/canvas-element.interface';
-import { ElementsStore } from './store/elements.store';
+import { ElementType } from '../../shared/canvas-element.interface';
+import { ElementsStore } from '../../store/elements.store';
 
 @Directive({
   selector: '[appSideBarElement]',

@@ -1,6 +1,11 @@
-import { Directive, ElementRef, HostListener, inject, output } from '@angular/core';
-import { ElementsStore } from '../../store/elements.store';
-import { ElementType } from '../../canvas-element/canvas-element.interface';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+} from '@angular/core';
+import { ElementsStore } from '../../../store/elements.store';
+import { ElementType } from '../../../shared/canvas-element.interface';
 
 @Directive({
   selector: '[appCanvasPanning]',
@@ -11,7 +16,6 @@ export class CanvasPanningDirective {
   private startY = 0;
   private initialScrollLeft = 0;
   private initialScrollTop = 0;
-  
 
   constructor(private el: ElementRef<HTMLDivElement>) {}
   store = inject(ElementsStore);
@@ -34,9 +38,7 @@ export class CanvasPanningDirective {
   }
 
   private onPointerMove = (event: PointerEvent): void => {
-    if (!this.isPannableArea(event) ) return;
-
-
+    if (!this.isPannableArea(event)) return;
 
     const deltaX = event.clientX - this.startX;
     const deltaY = event.clientY - this.startY;
@@ -45,8 +47,7 @@ export class CanvasPanningDirective {
   };
 
   private onPointerUp = (): void => {
-
-    console.log("DEBUG: Removing pointermove listener");
+    console.log('DEBUG: Removing pointermove listener');
     document.removeEventListener('pointermove', this.onPointerMove);
     document.removeEventListener('pointerup', this.onPointerUp);
   };

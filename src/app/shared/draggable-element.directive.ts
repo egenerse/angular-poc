@@ -8,8 +8,9 @@ import {
   output,
 } from '@angular/core';
 import { throttle } from 'lodash-es';
-import { ElementsStore } from '../../store/elements.store';
-import { CanvasElement } from '../../canvas-element/canvas-element.interface';
+import { CanvasElement } from './canvas-element.interface';
+import { ElementsStore } from '../store/elements.store';
+
 
 @Directive({
   selector: '[appDraggableElement]',
@@ -38,13 +39,14 @@ export class DraggableElementDirective implements OnDestroy {
   }
 
   @HostListener('mousedown', ['$event'])
-  onMouseDown(event: MouseEvent): void {
+  onMouseDown(event: MouseEvent) {
     console.log('DEBUG: DraggableElementDirective onMouseDown');
     event.preventDefault();
     this.initializeDrag(event.clientX, event.clientY);
     document.addEventListener('mousemove', this.throttledMouseMove);
     console.log('mousemove listener added');
     document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    event.stopPropagation();
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -82,22 +84,22 @@ export class DraggableElementDirective implements OnDestroy {
 
   private initializeDrag(clientX: number, clientY: number): void {
     this.setActiveElement.emit(this.element());
-  
+
     // Get the closest SVG canvas
     const canvas = this.el.nativeElement.closest('svg') as SVGElement;
     this.canvasPosition = canvas?.getBoundingClientRect() ?? null;
-  
+
     // Get element's bounding box
     const boundingBox = this.getBoundingBox();
-  
+
     // Calculate offset from the cursor to the element's top-left corner
     this.offsetX = clientX - boundingBox.x;
     this.offsetY = clientY - boundingBox.y;
   }
-  
+
   private getBoundingBox(): { x: number; y: number } {
     const element = this.el.nativeElement;
-  
+
     // Try to use getBoundingClientRect
     const rect = element.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
@@ -106,9 +108,11 @@ export class DraggableElementDirective implements OnDestroy {
         y: rect.top,
       };
     }
-  
+
     // Fallback to getBBox for SVG elements
-    const svgElement = element.querySelector('polygon, rect, circle') as SVGGraphicsElement;
+    const svgElement = element.querySelector(
+      'polygon, rect, circle'
+    ) as SVGGraphicsElement;
     const bbox = svgElement?.getBBox();
     if (bbox) {
       return {
@@ -116,18 +120,17 @@ export class DraggableElementDirective implements OnDestroy {
         y: bbox.y,
       };
     }
-  
+
     console.warn('Could not calculate bounding box for element.');
     return { x: 0, y: 0 };
   }
-  
 
   private handleDrag(clientX: number, clientY: number): void {
     if (!this.canvasPosition) return;
-    
+
     const x = clientX - this.canvasPosition.left - this.offsetX;
     const y = clientY - this.canvasPosition.top - this.offsetY;
-  
+
     // Update the element's position in the store
     this.store.moveElement({ id: this.element().id, x, y });
   }

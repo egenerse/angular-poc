@@ -2,7 +2,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import {
   CanvasElement,
   ElementType,
-} from '../canvas-element/canvas-element.interface';
+} from '../shared/canvas-element.interface';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 
 type ElementssState = {

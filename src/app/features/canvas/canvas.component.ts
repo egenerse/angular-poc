@@ -1,11 +1,11 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { BoxDirective } from './directives/box.directive';
-import { TriangleDirective } from './directives/triangle.directive';
-import { CanvasElement } from '../canvas-element/canvas-element.interface';
-import { ElementsStore } from '../store/elements.store';
+import { CanvasElement } from '../../shared/canvas-element.interface';
+import { ElementsStore } from '../../store/elements.store';
 import { JsonPipe } from '@angular/common';
-import { DraggableElementDirective } from './directives/draggable-element.directive';
 import { CanvasPanningDirective } from './directives/canvas-panning.directive';
+import { DraggableElementDirective } from '../../shared/draggable-element.directive';
+import { BoxDirective } from '../elements/box.directive';
+import { TriangleDirective } from '../elements/triangle.directive';
 
 @Component({
   selector: 'app-canvas',
@@ -18,9 +18,15 @@ import { CanvasPanningDirective } from './directives/canvas-panning.directive';
     JsonPipe,
   ],
   template: `
-    <p>
+    @if(activeElement) {
+    <p
+      [style.position]="'absolute'"
+      [style.left.px]="0"
+      [style.top.px]="0"
+    >
       {{ activeElement | json }}
     </p>
+    }
     <div appCanvasPanning #canvas>
       <div (pointerup)="onCanvasPointerUp($event)">
         <svg width="2000" height="2000">
@@ -35,8 +41,6 @@ import { CanvasPanningDirective } from './directives/canvas-panning.directive';
               appDraggableElement
               [activeElement]="activeElement"
               [element]="element"
-              [x]="0"
-              [y]="0"
               [width]="100"
               [height]="100"
               [fill]="'#007acc'"

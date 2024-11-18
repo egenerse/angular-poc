@@ -1,7 +1,7 @@
-import { Component, HostListener, inject } from '@angular/core';
-import { CanvasComponent } from './canvas/canvas.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { Component } from '@angular/core';
+import { CanvasComponent } from './features/canvas/canvas.component';
 import { ElementsStore } from './store/elements.store';
+import { SidebarComponent } from './features/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',

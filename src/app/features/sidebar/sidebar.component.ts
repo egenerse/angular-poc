@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { SideBarElementDirective } from '../side-bar-element.directive';
-import { ElementType } from '../canvas-element/canvas-element.interface';
-import { ElementsStore } from '../store/elements.store';
 import { NgStyle } from '@angular/common';
+import { SideBarElementDirective } from './side-bar-element.directive';
+import { ElementType } from '../../shared/canvas-element.interface';
+import { ElementsStore } from '../../store/elements.store';
 
 @Component({
   selector: 'app-sidebar',
