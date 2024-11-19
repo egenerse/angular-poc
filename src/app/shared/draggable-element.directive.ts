@@ -30,8 +30,8 @@ export class DraggableElementDirective implements OnDestroy {
   private throttledTouchMove: (event: TouchEvent) => void;
 
   constructor(private el: ElementRef) {
-    this.throttledMouseMove = throttle(this.onMouseMove.bind(this), 40);
-    this.throttledTouchMove = throttle(this.onTouchMove.bind(this), 40);
+    this.throttledMouseMove = throttle(this.onMouseMove.bind(this), 30);
+    this.throttledTouchMove = throttle(this.onTouchMove.bind(this), 30);
   }
 
   ngOnDestroy() {
