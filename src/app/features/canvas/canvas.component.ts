@@ -19,11 +19,7 @@ import { TriangleDirective } from '../elements/triangle.directive';
   ],
   template: `
     @if(activeElement) {
-    <p
-      [style.position]="'absolute'"
-      [style.left.px]="0"
-      [style.top.px]="0"
-    >
+    <p [style.position]="'absolute'" [style.left.px]="0" [style.top.px]="0">
       {{ activeElement | json }}
     </p>
     }
@@ -33,6 +29,7 @@ import { TriangleDirective } from '../elements/triangle.directive';
           @for (element of this.store.elements(); track element.id) {
           <g
             [attr.transform]="'translate(' + element.x + ',' + element.y + ')'"
+            [class.selected]="store.selectedElements().includes(element.id)"
           >
             @if (element.type === 'box') {
             <g
@@ -70,6 +67,11 @@ import { TriangleDirective } from '../elements/triangle.directive';
     `
       svg {
         background-color: #f9f9f9;
+      }
+      .selected {
+        outline: 3px solid pink;
+        outline-offset: 5px;
+        cursor: pointer;
       }
     `,
   ],

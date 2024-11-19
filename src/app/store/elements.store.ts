@@ -1,13 +1,11 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import {
-  CanvasElement,
-  ElementType,
-} from '../shared/canvas-element.interface';
+import { CanvasElement, ElementType } from '../shared/canvas-element.interface';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 
 type ElementssState = {
   elements: CanvasElement[];
   draggedElementType: ElementType | null;
+  selectedElements: number[];
 };
 
 const initialState: ElementssState = {
@@ -19,6 +17,7 @@ const initialState: ElementssState = {
       id: 1731667437104,
     },
   ],
+  selectedElements: [],
   draggedElementType: null,
 };
 
@@ -45,6 +44,12 @@ export const ElementsStore = signalStore(
       patchState(store, (state) => ({
         ...state,
         draggedElementType,
+      }));
+    },
+    setSelectedElements(selectedElements: number[]): void {
+      patchState(store, (state) => ({
+        ...state,
+        selectedElements,
       }));
     },
 

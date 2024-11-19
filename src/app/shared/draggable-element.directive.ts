@@ -46,6 +46,7 @@ export class DraggableElementDirective implements OnDestroy {
     document.addEventListener('mousemove', this.throttledMouseMove);
     console.log('mousemove listener added');
     document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.store.setSelectedElements([this.element().id]);
     event.stopPropagation();
   }
 
@@ -68,6 +69,8 @@ export class DraggableElementDirective implements OnDestroy {
     this.initializeDrag(touch.clientX, touch.clientY);
     document.addEventListener('touchmove', this.throttledTouchMove);
     document.addEventListener('touchend', this.onTouchEnd.bind(this));
+    this.store.setSelectedElements([this.element().id]);
+    event.stopPropagation();
   }
 
   private onTouchMove(event: TouchEvent): void {

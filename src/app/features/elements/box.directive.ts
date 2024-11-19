@@ -41,3 +41,4 @@ export class BoxDirective {
   text = input(''); // Optional text
   isEditable = input(false); // Enable input fields
 }
+

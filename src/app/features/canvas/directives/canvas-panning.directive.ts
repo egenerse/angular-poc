@@ -1,11 +1,5 @@
-import {
-  Directive,
-  ElementRef,
-  HostListener,
-  inject,
-} from '@angular/core';
+import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 import { ElementsStore } from '../../../store/elements.store';
-import { ElementType } from '../../../shared/canvas-element.interface';
 
 @Directive({
   selector: '[appCanvasPanning]',
@@ -34,6 +28,7 @@ export class CanvasPanningDirective {
 
     document.addEventListener('pointermove', this.onPointerMove);
     document.addEventListener('pointerup', this.onPointerUp);
+    this.store.setSelectedElements([]);
     return false;
   }
 
